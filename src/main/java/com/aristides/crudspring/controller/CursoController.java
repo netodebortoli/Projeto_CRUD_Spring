@@ -2,13 +2,18 @@ package com.aristides.crudspring.controller;
 
 import com.aristides.crudspring.model.Curso;
 import com.aristides.crudspring.repositorio.CursoRepositorio;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("api/cursos")
 @AllArgsConstructor
@@ -23,7 +28,8 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> buscarId(@PathVariable Long id) {
+    public ResponseEntity<Curso> buscarId(@PathVariable @NotNull @Positive
+                                              Long id) {
         return cursoRepositorio.findById(id)
             .map(registro -> ResponseEntity.ok().body(registro))
             .orElse(ResponseEntity.notFound().build());
@@ -32,12 +38,13 @@ public class CursoController {
     //@RequestMapping(method = RequestMethod.POST)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Curso criarCurso(@RequestBody Curso novoCurso) {
+    public Curso criarCurso(@RequestBody @Valid Curso novoCurso) {
         return cursoRepositorio.save(novoCurso);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Curso> atualizarCurso(@PathVariable Long id, @RequestBody Curso curso) {
+    public ResponseEntity<Curso> atualizarCurso(@PathVariable @Valid @NotNull Long id, @RequestBody
+                                                    Curso curso) {
         return cursoRepositorio.findById(id)
                 .map(cursoEncontrado -> {
                     cursoEncontrado.setNome(curso.getNome());
@@ -49,7 +56,7 @@ public class CursoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarCurso(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarCurso(@PathVariable @Valid @NotNull Long id) {
         return cursoRepositorio.findById(id)
                 .map(cursoEncontrado -> {
                     cursoRepositorio.deleteById(id);
