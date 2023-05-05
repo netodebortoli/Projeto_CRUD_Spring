@@ -1,6 +1,6 @@
 package com.aristides.crudspring;
 
-import com.aristides.crudspring.model.Curso;
+import com.aristides.crudspring.modelo.Curso;
 import com.aristides.crudspring.repositorio.CursoRepositorio;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

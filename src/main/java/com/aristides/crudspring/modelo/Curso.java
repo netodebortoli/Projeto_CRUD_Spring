@@ -1,4 +1,4 @@
-package com.aristides.crudspring.model;
+package com.aristides.crudspring.modelo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
