@@ -1,5 +1,6 @@
 package com.aristides.crudspring.servico;
 
+import com.aristides.crudspring.excecoes.RegistroNotFoundException;
 import com.aristides.crudspring.modelo.Curso;
 import com.aristides.crudspring.repositorio.CursoRepositorio;
 import jakarta.validation.Valid;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
@@ -25,30 +25,35 @@ public class CursoServico {
         return cursoRepositorio.findAll();
     }
 
-    public Optional<Curso> buscarId(@NotNull @Positive Long id) {
-        return cursoRepositorio.findById(id);
+    public Curso buscarId(@NotNull @Positive Long id) {
+        return cursoRepositorio.findById(id)
+                .orElseThrow(
+                        () -> new RegistroNotFoundException(id)
+                );
     }
 
     public Curso criarCurso(@Valid Curso novoCurso) {
         return cursoRepositorio.save(novoCurso);
     }
 
-    public Optional<Curso> atualizarCurso(@Valid @NotNull Long id, Curso curso) {
+    public Curso atualizarCurso(@Valid @NotNull Long id, Curso curso) {
         return cursoRepositorio.findById(id)
                 .map(cursoEncontrado -> {
                     cursoEncontrado.setNome(curso.getNome());
                     cursoEncontrado.setCategoria(curso.getCategoria());
                     return cursoRepositorio.save(cursoEncontrado);
-                });
+                })
+                .orElseThrow(
+                        () -> new RegistroNotFoundException(id)
+                );
     }
 
-    public boolean deletarCurso(@Valid @NotNull Long id) {
-        return cursoRepositorio.findById(id)
-                .map(cursoEncontrado -> {
-                    cursoRepositorio.deleteById(id);
-                    return true;
-                })
-                .orElse(false);
+    public void deletarCurso(@Valid @NotNull Long id) {
+        cursoRepositorio.delete(cursoRepositorio.findById(id)
+                .orElseThrow(
+                        () -> new RegistroNotFoundException(id)
+                )
+        );
     }
 
 }

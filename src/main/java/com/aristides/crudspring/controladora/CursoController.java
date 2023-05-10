@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +28,8 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> buscarId(@PathVariable @NotNull @Positive Long id) {
-        return cursoServico.buscarId(id)
-            .map(registro -> ResponseEntity.ok().body(registro))
-            .orElse(ResponseEntity.notFound().build());
+    public Curso buscarId(@PathVariable @NotNull @Positive Long id) {
+        return cursoServico.buscarId(id);
     }
 
     @PostMapping
@@ -42,17 +39,13 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Curso> atualizarCurso(@PathVariable @Valid @NotNull Long id, @RequestBody Curso curso) {
-        return cursoServico.atualizarCurso(id, curso)
-                .map(cursoEncontrado -> ResponseEntity.ok().body(cursoEncontrado))
-                .orElse(ResponseEntity.notFound().build());
+    public Curso atualizarCurso(@PathVariable @Valid @NotNull Long id, @RequestBody Curso curso) {
+        return cursoServico.atualizarCurso(id, curso);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarCurso(@PathVariable @Valid @NotNull Long id) {
-        if (cursoServico.deletarCurso(id)) {
-            return ResponseEntity.noContent().<Void>build();
-        }
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deletarCurso(@PathVariable @Valid @NotNull Long id) {
+        cursoServico.deletarCurso(id);
     }
 }
