@@ -1,6 +1,6 @@
 package com.aristides.crudspring.controladora;
 
-import com.aristides.crudspring.modelo.Curso;
+import com.aristides.crudspring.dto.CursoDTO;
 import com.aristides.crudspring.servico.CursoServico;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -23,23 +23,23 @@ public class CursoController {
     }
 
     @GetMapping
-    public List<Curso> listaCursos() {
+    public @ResponseBody List<CursoDTO> listaCursos() {
         return cursoServico.listaCursos();
     }
 
     @GetMapping("/{id}")
-    public Curso buscarId(@PathVariable @NotNull @Positive Long id) {
+    public CursoDTO buscarId(@PathVariable @NotNull @Positive Long id) {
         return cursoServico.buscarId(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Curso criarCurso(@RequestBody @Valid Curso novoCurso) {
+    public CursoDTO criarCurso(@RequestBody @Valid @NotNull CursoDTO novoCurso) {
         return cursoServico.criarCurso(novoCurso);
     }
 
     @PutMapping("/{id}")
-    public Curso atualizarCurso(@PathVariable @Valid @NotNull Long id, @RequestBody Curso curso) {
+    public CursoDTO atualizarCurso(@PathVariable @Positive @NotNull Long id, @RequestBody @NotNull @Valid CursoDTO curso) {
         return cursoServico.atualizarCurso(id, curso);
     }
 
