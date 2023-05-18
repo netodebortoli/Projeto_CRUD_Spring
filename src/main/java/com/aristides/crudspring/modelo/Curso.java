@@ -1,10 +1,13 @@
 package com.aristides.crudspring.modelo;
 
+import com.aristides.crudspring.enumeradores.Categoria;
+import com.aristides.crudspring.enumeradores.Status;
+import com.aristides.crudspring.enumeradores.conversores.ConversorCategoria;
+import com.aristides.crudspring.enumeradores.conversores.ConversorStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -28,14 +31,12 @@ public class Curso {
     private String nome;
 
     @NotNull
-    @Length(max = 10)
-    @Pattern(regexp = "Back-end|Front-end")
     @Column(length = 10, nullable = false)
-    private String categoria;
+    @Convert(converter = ConversorCategoria.class)
+    private Categoria categoria;
 
     @NotNull
-    @Length(max = 10)
-    @Pattern(regexp = "Ativo|Inativo")
     @Column(length = 10, nullable = false)
-    private String status = "Ativo";
+    @Convert(converter = ConversorStatus.class)
+    private Status status = Status.ATIVO;
 }

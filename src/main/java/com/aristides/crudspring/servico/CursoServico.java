@@ -44,7 +44,7 @@ public class CursoServico {
         return cursoRepositorio.findById(id)
                 .map(cursoEncontrado -> {
                     cursoEncontrado.setNome(curso.nome());
-                    cursoEncontrado.setCategoria(curso.categoria());
+                    cursoEncontrado.setCategoria(cursoMapper.converterValorCategoria(curso.categoria()));
                     return cursoMapper.toDTO(cursoRepositorio.save(cursoEncontrado));
                 }).orElseThrow(() -> new RegistroNotFoundException(id));
     }

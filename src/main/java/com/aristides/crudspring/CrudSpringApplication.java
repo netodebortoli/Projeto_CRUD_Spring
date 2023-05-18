@@ -1,5 +1,6 @@
 package com.aristides.crudspring;
 
+import com.aristides.crudspring.enumeradores.Categoria;
 import com.aristides.crudspring.modelo.Curso;
 import com.aristides.crudspring.repositorio.CursoRepositorio;
 import org.springframework.boot.CommandLineRunner;
@@ -21,9 +22,8 @@ public class CrudSpringApplication {
 
 			Curso c = new Curso();
 			c.setNome("Angular");
-			c.setCategoria("Front-end");
-
- 			cursoRepositorio.save(c);
+			c.setCategoria(Categoria.FRONT_END);
+			cursoRepositorio.save(c);
 		};
 	}
 }
