@@ -1,9 +1,13 @@
 package com.aristides.crudspring.dto.Mapper;
 
+import com.aristides.crudspring.dto.AulaDTO;
 import com.aristides.crudspring.dto.CursoDTO;
 import com.aristides.crudspring.enumeradores.Categoria;
 import com.aristides.crudspring.modelo.Curso;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CursoMapper {
@@ -12,7 +16,17 @@ public class CursoMapper {
         if (curso == null) {
             return null;
         }
-        return new CursoDTO( curso.getId(),curso.getNome(),curso.getCategoria().getValor() );
+
+        List<AulaDTO> listaAulaDto = curso.getAulas()
+                .stream()
+                .map(aula -> new AulaDTO(aula.getId(), aula.getNome(), aula.getYoutubeURL()))
+                .collect(Collectors.toList());
+
+        return new CursoDTO(
+                curso.getId(),
+                curso.getNome(),
+                curso.getCategoria().getValor(),
+                listaAulaDto);
     }
 
     public Curso toEntity(CursoDTO cursoDTO) {
@@ -26,7 +40,9 @@ public class CursoMapper {
             curso.setId(cursoDTO.id());
         }
         curso.setNome(cursoDTO.nome());
-        curso.setCategoria( converterValorCategoria(cursoDTO.categoria()) );
+        curso.setCategoria(
+                converterValorCategoria(cursoDTO.categoria())
+        );
         return curso;
     }
 
