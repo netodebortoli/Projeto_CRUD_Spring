@@ -3,6 +3,7 @@ package com.aristides.crudspring.servico;
 import com.aristides.crudspring.dto.CursoDTO;
 import com.aristides.crudspring.dto.Mapper.CursoMapper;
 import com.aristides.crudspring.excecoes.RegistroNotFoundException;
+import com.aristides.crudspring.modelo.Curso;
 import com.aristides.crudspring.repositorio.CursoRepositorio;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -33,24 +34,30 @@ public class CursoServico {
     }
 
     public CursoDTO buscarId(@NotNull @Positive Long id) {
-        return cursoRepositorio.findById(id).map(cursoMapper::toDTO).orElseThrow(() -> new RegistroNotFoundException(id));
+        return cursoRepositorio.findById(id)
+                .map(cursoMapper::toDTO)
+                .orElseThrow(() -> new RegistroNotFoundException(id));
     }
 
     public CursoDTO criarCurso(@Valid @NotNull CursoDTO novoCurso) {
         return cursoMapper.toDTO(cursoRepositorio.save(cursoMapper.toEntity(novoCurso)));
     }
 
-    public CursoDTO atualizarCurso(@Valid @NotNull Long id, @Valid @NotNull CursoDTO curso) {
+    public CursoDTO atualizarCurso(@Valid @NotNull Long id, @Valid @NotNull CursoDTO cursoDTO) {
         return cursoRepositorio.findById(id)
                 .map(cursoEncontrado -> {
-                    cursoEncontrado.setNome(curso.nome());
-                    cursoEncontrado.setCategoria(cursoMapper.converterValorCategoria(curso.categoria()));
+                    Curso curso = cursoMapper.toEntity(cursoDTO);
+                    cursoEncontrado.setNome(cursoDTO.nome());
+                    cursoEncontrado.setCategoria(cursoMapper.converterValorCategoria(cursoDTO.categoria()));
+                    cursoEncontrado.getAulas().clear();
+                    curso.getAulas().forEach(cursoEncontrado.getAulas()::add);
                     return cursoMapper.toDTO(cursoRepositorio.save(cursoEncontrado));
                 }).orElseThrow(() -> new RegistroNotFoundException(id));
     }
 
     public void deletarCurso(@Valid @NotNull Long id) {
-        cursoRepositorio.delete(cursoRepositorio.findById(id).orElseThrow(() -> new RegistroNotFoundException(id)));
+        cursoRepositorio.delete(cursoRepositorio.findById(id)
+                .orElseThrow(() -> new RegistroNotFoundException(id)));
     }
 
 }
